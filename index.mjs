@@ -9,7 +9,7 @@ app.use(Express.json());
 const playlist = [];
 
 const stop = async () => {
-  if (playlist[0].isPlaying) playlist.shift();
+  if (playlist[0]?.isPlaying) playlist.shift();
 
   try {
     await fkill('Brave Browser');
