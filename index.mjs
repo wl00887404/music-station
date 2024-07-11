@@ -11,9 +11,7 @@ const playlist = [];
 const play = async () => {
   if (playlist[0]?.isPlaying) return;
 
-  await stop();
   playlist[0].isPlaying = true;
-
   spawn('open', [playlist[0].url]);
 };
 
@@ -46,7 +44,7 @@ app.post('/push', async (req, res) => {
   const minutes = parseInt(/(\d+)M/.exec(durationMatch[1])[1]);
   const seconds = parseInt(/(\d+)S/.exec(durationMatch[1])[1]);
 
-  const bufferTime = 3;
+  const bufferTime = 1;
   const duration = (minutes * 60 + seconds + bufferTime) * 1000;
 
   playlist.push({ url, title, duration, isPlaying: false });
@@ -67,9 +65,14 @@ app.use(Express.static('./public'));
 
 app.listen(3000, () => {
   console.log('Server is on http://localhost:3000');
+  let coolDown = 0;
 
   // playlist loop
   setInterval(() => {
+    if (coolDown > 0) {
+      coolDown = Math.max(coolDown - 1000, 0);
+      return;
+    }
     if (playlist.length === 0) return;
 
     if (!playlist[0].isPlaying) {
@@ -80,5 +83,7 @@ app.listen(3000, () => {
     if (playlist[0].duration > 0) return;
 
     playlist.shift();
+    stop();
+    coolDown = 1000;
   }, 1000);
 });
