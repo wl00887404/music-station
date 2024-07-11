@@ -8,9 +8,16 @@ app.use(Express.json());
 
 const playlist = [];
 
-const stop = async () => {
-  if (playlist[0]?.isPlaying) playlist.shift();
+const play = async () => {
+  if (playlist[0]?.isPlaying) return;
 
+  await stop();
+  playlist[0].isPlaying = true;
+
+  spawn('open', [playlist[0].url]);
+};
+
+const stop = async () => {
   try {
     await fkill('Brave Browser');
   } catch (error) {
@@ -48,14 +55,12 @@ app.post('/push', async (req, res) => {
 });
 
 app.post('/stop', (_req, res) => {
-  console.log('/stop');
-  stop().then(error => {
-    if (error) {
-      return res.send({ success: false, message: error.toString() });
-    }
+  if (playlist.length === 0) {
+    return res.send({ success: false });
+  }
 
-    return res.send({ success: true });
-  });
+  playlist[0].duration = -42; // 讓 playlist loop 移除這首歌
+  res.send({ success: true });
 });
 
 app.use(Express.static('./public'));
@@ -63,18 +68,17 @@ app.use(Express.static('./public'));
 app.listen(3000, () => {
   console.log('Server is on http://localhost:3000');
 
+  // playlist loop
   setInterval(() => {
-    if (!playlist[0]) return;
+    if (playlist.length === 0) return;
 
     if (!playlist[0].isPlaying) {
-      playlist[0].isPlaying = true;
-      spawn('open', [playlist[0].url]);
-      return;
+      return play();
     }
 
     playlist[0].duration -= 1000;
     if (playlist[0].duration > 0) return;
 
-    stop();
+    playlist.shift();
   }, 1000);
 });
