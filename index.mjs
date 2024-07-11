@@ -51,7 +51,7 @@ app.post('/stop', (_req, res) => {
   console.log('/stop');
   stop().then(error => {
     if (error) {
-      res.send({ success: false, message: error.toString() });
+      return res.send({ success: false, message: error.toString() });
     }
 
     return res.send({ success: true });
