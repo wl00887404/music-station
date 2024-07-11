@@ -26,13 +26,9 @@
             <button class="btn btn-primary" type="button" id="pushSong">
               播放
             </button>
-            
           </div>
           <button id="stopSong" type="button" class="btn btn-outline-secondary">
             停止
-          </button>
-          <button id="refetch" type="button" class="btn btn-outline-secondary">
-            重新整理
           </button>
         </div>
       </div>
@@ -56,10 +52,11 @@
               const isPlayingHTML = song.isPlaying
                 ? '<span class="badge text-bg-secondary me-2">正在播放</span>'
                 : '';
-
-              return `<li>${isPlayingHTML}${song.title} duration=${
+              const durationHTML = `<span class="ms-5">還剩下 ${
                 song.duration / 1000
-              }</li>`;
+              } 秒</span>`;
+
+              return `<li class="mb-4">${isPlayingHTML}${song.title}${durationHTML}</li>`;
             })
             .join('');
         });
@@ -71,14 +68,10 @@
 
       pushSong.onclick = () => {
         const url = input.value;
-        axios.post('/push', { url }).then(({ data }) => {
-          if (!data.success) return;
-          showPlaylist();
-        });
+        axios.post('/push', { url });
       };
 
-      showPlaylist();
-      refetch.onclick = showPlaylist;
+      setInterval(showPlaylist, 1000);
     </script>
   </body>
 </html>
