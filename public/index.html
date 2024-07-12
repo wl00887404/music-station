@@ -75,16 +75,16 @@
               const isPlayingHTML = song.isPlaying
                 ? '<span class="badge text-bg-secondary me-2">正在播放</span>'
                 : '';
-              const durationHTML = `<span class="ms-4">還剩下 ${
+              const durationHTML = `<span>剩下 ${
                 song.duration / 1000
               } 秒</span>`;
 
               const cancelButton = !song.isPlaying
-                ? `<button type="button" class="btn btn-danger ms-4" data-song-id="${song.id}">取消列隊</button>`
+                ? `<button type="button" class="btn btn-danger" data-song-id="${song.id}">取消列隊</button>`
                 : '';
 
               return `<li class="mb-4">
-                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <div class="d-flex align-items-center gap-4 flex-wrap">
                     ${isPlayingHTML}${song.title}${durationHTML}${cancelButton}
                   </div>
                 </li>`;
