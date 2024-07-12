@@ -21,12 +21,12 @@
               type="text"
               class="form-control"
               placeholder="youtube 網址"
-              value="https://www.youtube.com/watch?v=OcohEgpJc6I"
             />
             <button class="btn btn-primary" type="button" id="pushSong">
               播放
             </button>
           </div>
+          <button class="btn" type="button" id="songOfRenee">Renee 專屬</button>
           <button id="stopSong" type="button" class="btn btn-outline-secondary">
             停止
           </button>
@@ -75,6 +75,12 @@
       pushSong.onclick = () => {
         const url = input.value;
         axios.post('/push', { url });
+      };
+
+      songOfRenee.onclick = () => {
+        axios.post('/push', {
+          url: 'https://www.youtube.com/watch?v=btPv0-d3NbE',
+        });
       };
 
       setInterval(showPlaylist, 1000);
