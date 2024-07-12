@@ -2,6 +2,11 @@ import Express from 'express';
 import axios from 'axios';
 import fkill from 'fkill';
 import { spawn } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = Express();
 app.use(Express.json());
@@ -61,7 +66,7 @@ app.post('/stop', (_req, res) => {
   res.send({ success: true });
 });
 
-app.use(Express.static('./public'));
+app.use(Express.static(path.resolve(__dirname, './public')));
 
 app.listen(3000, () => {
   console.log('Server is on http://localhost:3000');
