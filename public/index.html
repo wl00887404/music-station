@@ -67,16 +67,27 @@
     <script>
       const showPlaylist = () => {
         axios.get('/playlist').then(({ data }) => {
+          if (data.length === 0) {
+            return (playlist.innerHTML = '<li>目前沒有任何待播歌曲</li>');
+          }
           playlist.innerHTML = data
             .map(song => {
               const isPlayingHTML = song.isPlaying
                 ? '<span class="badge text-bg-secondary me-2">正在播放</span>'
                 : '';
-              const durationHTML = `<span class="ms-5">還剩下 ${
+              const durationHTML = `<span class="ms-4">還剩下 ${
                 song.duration / 1000
               } 秒</span>`;
 
-              return `<li class="mb-4">${isPlayingHTML}${song.title}${durationHTML}</li>`;
+              const cancelButton = !song.isPlaying
+                ? `<button type="button" class="btn btn-danger ms-4" data-song-id="${song.id}">取消列隊</button>`
+                : '';
+
+              return `<li class="mb-4">
+                  <div class="d-flex align-items-center">
+                    ${isPlayingHTML}${song.title}${durationHTML}${cancelButton}
+                  </div>
+                </li>`;
             })
             .join('');
         });
@@ -85,14 +96,14 @@
       stopSong.onclick = () => {
         axios.post('/stop').then(({ data }) => {
           console.log(data);
-          setTimeout(showPlaylist, 1000);
+          // setTimeout(showPlaylist, 1000);
         });
       };
 
       pushSong.onclick = () => {
         const url = input.value;
         axios.post('/push', { url }).then(() => {
-          setTimeout(showPlaylist, 1000);
+          // setTimeout(showPlaylist, 1000);
         });
       };
 
@@ -102,9 +113,21 @@
         });
       };
 
+      playlist.onclick = e => {
+        const {
+          tagName,
+          dataset: { songId },
+        } = e.target;
+
+        if (tagName !== 'BUTTON' || !songId) return;
+        console.log(tagName, songId);
+        axios.post('/cancel', { songId }).then(() => {
+          // setTimeout(showPlaylist, 1000);
+        });
+      };
+
       setInterval(() => {
         if (document.hidden) return;
-
         showPlaylist();
       }, 1000);
     </script>

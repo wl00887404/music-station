@@ -51,8 +51,9 @@ app.post('/push', async (req, res) => {
 
   const bufferTime = 1;
   const duration = (minutes * 60 + seconds + bufferTime) * 1000;
+  const id = Date.now().toString(16);
 
-  playlist.push({ url, title, duration, isPlaying: false });
+  playlist.push({ id, url, title, duration, isPlaying: false });
 
   res.send({ success: true });
 });
@@ -63,6 +64,20 @@ app.post('/stop', (_req, res) => {
   }
 
   playlist[0].duration = -42; // 讓 playlist loop 移除這首歌
+  res.send({ success: true });
+});
+
+app.post('/cancel', (req, res) => {
+  const { songId } = req.body;
+  const index = playlist.findIndex(song => song.id === songId);
+
+  if (index === -1 || playlist[index].isPlaying) {
+    return res.send({ success: false });
+  }
+
+  console.log('/cancel', playlist[index]);
+  
+  playlist.splice(index, 1);
   res.send({ success: true });
 });
 
