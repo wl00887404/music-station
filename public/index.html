@@ -10,6 +10,11 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+    <style>
+      #refreshInput {
+        flex: 48px 0 0;
+      }
+    </style>
   </head>
   <body>
     <div class="container py-4">
@@ -34,6 +39,16 @@
           </button>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-12 d-flex align-items-center">
+          <h2 class="flex-shrink-0 mb-0">目前的播放清單</h2>
+          <button id="refresh" type="button" class="btn btn-secondary ms-4">
+            刷新
+          </button>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-12">
           <ul id="playlist"></ul>
@@ -71,12 +86,17 @@
       };
 
       stopSong.onclick = () => {
-        axios.post('/stop').then(({ data }) => console.log(data));
+        axios.post('/stop').then(({ data }) => {
+          console.log(data);
+          setTimeout(showPlaylist, 1000);
+        });
       };
 
       pushSong.onclick = () => {
         const url = input.value;
-        axios.post('/push', { url });
+        axios.post('/push', { url }).then(() => {
+          setTimeout(showPlaylist, 1000);
+        });
       };
 
       songOfRenee.onclick = () => {
@@ -85,7 +105,8 @@
         });
       };
 
-      setInterval(showPlaylist, 3000);
+      showPlaylist();
+      refresh.onclick = showPlaylist;
     </script>
   </body>
 </html>
