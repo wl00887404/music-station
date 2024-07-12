@@ -31,8 +31,8 @@
               新增到播放清單
             </button>
           </form>
-          <button id="songOfRenee" class="btn btn-warning" type="button">
-            Renee 專屬
+          <button id="privateSong" class="btn btn-warning" type="button">
+            蘿菠專屬
           </button>
           <button id="stopSong" type="button" class="btn btn-outline-secondary">
             咖歌 👎
@@ -73,7 +73,7 @@
           playlist.innerHTML = data
             .map(song => {
               const isPlayingHTML = song.isPlaying
-                ? '<span class="badge text-bg-secondary me-2">正在播放</span>'
+                ? '<span class="badge text-bg-secondary" style="margin-right: -1rem">正在播放</span>'
                 : '';
               const durationHTML = `<span>剩下 ${
                 song.duration / 1000
@@ -110,9 +110,10 @@
         });
       };
 
-      songOfRenee.onclick = () => {
+      privateSong.onclick = () => {
         axios.post('/push', {
-          url: 'https://www.youtube.com/watch?v=btPv0-d3NbE',
+          // url: 'https://www.youtube.com/watch?v=btPv0-d3NbE',
+          url: 'https://www.youtube.com/watch?v=iHWKj3LsARw',
         });
       };
 
