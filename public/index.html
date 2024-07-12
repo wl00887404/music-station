@@ -20,17 +20,17 @@
     <div class="container py-4">
       <div class="row mb-4">
         <div class="col-12 d-flex gap-2 align-items-center">
-          <div class="input-group w-auto flex-grow-1">
+          <form id="pushSong" class="input-group w-auto flex-grow-1">
             <input
               id="input"
               type="text"
               class="form-control"
               placeholder="youtube 網址"
             />
-            <button class="btn btn-primary" type="button" id="pushSong">
+            <button class="btn btn-primary" type="submit">
               新增到播放清單
             </button>
-          </div>
+          </form>
           <button id="songOfRenee" class="btn btn-warning" type="button">
             Renee 專屬
           </button>
@@ -100,8 +100,11 @@
         });
       };
 
-      pushSong.onclick = () => {
+      pushSong.onsubmit = e => {
+        e.preventDefault();
         const url = input.value;
+        if (!url) return;
+        input.value = '';
         axios.post('/push', { url }).then(() => {
           // setTimeout(showPlaylist, 1000);
         });
