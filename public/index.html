@@ -31,11 +31,27 @@
               新增到播放清單
             </button>
           </form>
-          <button id="privateSong" class="btn btn-warning" type="button">
-            蘿菠專屬
-          </button>
           <button id="stopSong" type="button" class="btn btn-outline-secondary">
             咖歌 👎
+          </button>
+          <button id="pauseSong" type="button" class="btn btn-outline-info">
+            暫停播放 ⏸️
+          </button>
+          <button id="resumeSong" type="button" class="btn btn-outline-success">
+            繼續播放 ▶️
+          </button>
+        </div>
+
+        <div class="mt-3">
+          <!-- 新增音量控制按鈕 -->
+          <button id="volumeUp" type="button" class="btn btn-outline-primary">
+            音量大聲 🔊
+          </button>
+          <button id="volumeDown" type="button" class="btn btn-outline-primary">
+            音量小聲 🔉
+          </button>
+          <button id="mute" type="button" class="btn btn-outline-danger">
+            靜音 🔇
           </button>
         </div>
       </div>
@@ -63,8 +79,7 @@
       setInterval(() => {
         document.title = document.title.slice(1) + document.title.slice(0, 1);
       }, 1000);
-    </script>
-    <script>
+
       const showPlaylist = () => {
         axios.get('/playlist').then(({ data }) => {
           if (data.length === 0) {
@@ -76,7 +91,7 @@
                 ? '<span class="badge text-bg-secondary" style="margin-right: -1rem">正在播放</span>'
                 : '';
               const durationHTML = `<span>剩下 ${
-                song.duration / 1000
+                song.remainingTime / 1000
               } 秒</span>`;
 
               const cancelButton = !song.isPlaying
@@ -96,7 +111,6 @@
       stopSong.onclick = () => {
         axios.post('/stop').then(({ data }) => {
           console.log(data);
-          // setTimeout(showPlaylist, 1000);
         });
       };
 
@@ -106,14 +120,37 @@
         if (!url) return;
         input.value = '';
         axios.post('/push', { url }).then(() => {
-          // setTimeout(showPlaylist, 1000);
+          console.log('Song added to playlist');
         });
       };
 
-      privateSong.onclick = () => {
-        axios.post('/push', {
-          // url: 'https://www.youtube.com/watch?v=btPv0-d3NbE',
-          url: 'https://www.youtube.com/watch?v=iHWKj3LsARw',
+      pauseSong.onclick = () => {
+        axios.post('/pause').then(({ data }) => {
+          console.log('Playback paused', data);
+        });
+      };
+
+      resumeSong.onclick = () => {
+        axios.post('/resume').then(({ data }) => {
+          console.log('Playback resumed', data);
+        });
+      };
+
+      volumeUp.onclick = () => {
+        axios.post('/volume', { action: 'up' }).then(({ data }) => {
+          console.log('Volume increased', data);
+        });
+      };
+
+      volumeDown.onclick = () => {
+        axios.post('/volume', { action: 'down' }).then(({ data }) => {
+          console.log('Volume decreased', data);
+        });
+      };
+
+      mute.onclick = () => {
+        axios.post('/volume', { action: 'mute' }).then(({ data }) => {
+          console.log('Volume muted', data);
         });
       };
 
@@ -124,9 +161,8 @@
         } = e.target;
 
         if (tagName !== 'BUTTON' || !songId) return;
-        console.log(tagName, songId);
         axios.post('/cancel', { songId }).then(() => {
-          // setTimeout(showPlaylist, 1000);
+          console.log('Song cancelled');
         });
       };
 
