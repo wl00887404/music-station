@@ -101,7 +101,7 @@ app.post('/stop', (_req, res) => {
     return res.send({ success: false });
   }
 
-  playlist[0].duration = -42; // 讓 playlist loop 移除這首歌
+  playlist[0].remainingTime = -42; // 讓 playlist loop 移除這首歌
   res.send({ success: true });
 });
 
@@ -136,11 +136,11 @@ app.post('/volume', async (req, res) => {
     switch (action) {
       case 'up':
         const currentVolumeUp = await loudness.getVolume();
-        await loudness.setVolume(Math.min(currentVolumeUp + 10, 100)); // 最大音量為 100
+        await loudness.setVolume(Math.min(currentVolumeUp + 3, 100)); // 最大音量為 100
         break;
       case 'down':
         const currentVolumeDown = await loudness.getVolume();
-        await loudness.setVolume(Math.max(currentVolumeDown - 10, 0)); // 最小音量為 0
+        await loudness.setVolume(Math.max(currentVolumeDown - 3, 0)); // 最小音量為 0
         break;
       case 'mute':
         // 禁音的代碼

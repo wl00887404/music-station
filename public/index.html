@@ -98,11 +98,15 @@
                 ? `<button type="button" class="btn btn-danger" data-song-id="${song.id}">取消列隊</button>`
                 : '';
 
+              // 將歌曲名稱包裹在<a>標籤內
               return `<li class="mb-4">
-                  <div class="d-flex align-items-center gap-4 flex-wrap">
-                    ${isPlayingHTML}${song.title}${durationHTML}${cancelButton}
-                  </div>
-                </li>`;
+                <div class="d-flex align-items-center gap-4 flex-wrap">
+                  ${isPlayingHTML}
+                  <a href="${song.url}" target="_blank">${song.title}</a>
+                  ${durationHTML}
+                  ${cancelButton}
+                </div>
+              </li>`;
             })
             .join('');
         });
